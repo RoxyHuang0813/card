@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>潛意識人生指引卡</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 保留原有基本樣式 */
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .btn {
+            padding: 12px 24px;
+            background-color: #5d4a8a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background-color: #6d5a9a;
+        }
+        /* 新增冥想引導樣式 */
+        .meditation-guide {
+            font-size: 1.2rem;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: rgba(255,255,255,0.8);
+            border-radius: 10px;
+        }
+        /* 卡片樣式保持不變 */
+        .card-container {
+            perspective: 1000px;
+            width: 300px;
+            height: 450px;
+            margin: 30px auto;
+        }
+        /* ...其他保持原有的卡片樣式... */
+    </style>
+</head>
+<body>
+    <!-- 開場動畫 (保持不變) -->
+    <div id="intro-animation" class="intro-animation">
+        <button id="skip-intro" class="btn btn-skip">跳過動畫</button>
+        <div class="intro-text">
+            <h2>歡迎來到潛意識人生指引卡</h2>
+            <p>讓你的潛意識為你指引方向...</p>
+        </div>
+        <img src="{{ url_for('static', filename='images/k_teacher.png') }}" 
+             alt="大K老師" 
+             class="k-teacher"
+             style="animation: fadeIn 1s ease-in 1s forwards; opacity: 0;">
+    </div>
+
+    <!-- 主內容區塊 (簡化版) -->
+    <div class="container" id="main-container">
+        <header>
+            <h1>潛意識人生指引卡</h1>
+            <p>靜心感受，讓卡牌給你答案</p>
+        </header>
+
+        <main>
+            <!-- 冥想引導區塊 -->
+            <div id="meditation-section">
+                <div class="meditation-guide">
+                    <p>請閉上眼睛，在心中默想你的問題...</p>
+                    <p>當你準備好時，點擊下方按鈕抽牌</p>
+                </div>
+                <img src="{{ url_for('static', filename='images/k_teacher.png') }}" 
+                     alt="大K老師" 
+                     class="k-teacher">
+                <button id="start-draw" class="btn">我準備好了</button>
+            </div>
+
+            <!-- 抽牌區塊 -->
+            <div id="card-section" class="hidden">
+                <div class="card-container">
+                    <div class="flip-card" id="main-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <!-- 通用牌卡背面 -->
+                                <img src="{{ url_for('static', filename='images/card_back.png') }}" 
+                                     alt="牌卡背面" 
+                                     class="card-image">
+                            </div>
+                            <div class="flip-card-back" id="card-back">
+                                <!-- 动态加载的正面图案 -->
+                                <div class="card-color-tag"></div>
+                                <div class="card-message"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <button id="draw-btn" class="btn">抽取卡牌</button>
+                    <button id="reset-btn" class="btn">重新開始</button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>靜心感受卡牌帶給您的訊息</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>

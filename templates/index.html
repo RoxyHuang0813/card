@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>潛意識人生指引卡</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --deep-purple: #4a2c82;
+            --gold: #d4af37;
+            --rust: #b34700;
+            --teal: #008080;
+            --ivory: #fffff0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Noto Sans TC', sans-serif;
+            background: url('/static/images/boho_bg_dark.jpg') center/cover no-repeat fixed;
+            color: var(--ivory);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+        
+        /* 大K老師對話框 */
+        .k-teacher {
+            width: 180px;
+            margin: 2rem auto 1rem;
+            animation: float 3s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        
+        .speech-bubble {
+            position: relative;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            padding: 1.5rem;
+            border-radius: 20px;
+            max-width: 80%;
+            margin: 0 auto 2rem;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .speech-bubble:after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: rgba(255, 255, 255, 0.9) transparent;
+        }
+        
+        /* 選項按鈕 */
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .option-btn {
+            background: linear-gradient(135deg, var(--deep-purple), var(--teal));
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        /* 卡片容器 */
+        .card-container {
+            perspective: 1000px;
+            width: 300px;
+            height: 450px;
+            margin: 2rem auto;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s ease;
+            position: relative;
+        }
+        
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+            pointer-events: none; /* 初始不可點擊 */
+        }
+        
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .card-front {
+            background: url('/static/images/card_back.png') center/cover;
+            transform: rotateY(0deg);
+        }
+        
+        .card-back {
+            background-size: cover;
+            background-position: center;
+            transform: rotateY(180deg);
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+        
+        /* 動畫 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes shuffle {
+            0% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-20px) rotate(-5deg); }
+            50% { transform: translateX(20px) rotate(5deg); }
+            75% { transform: translateX(-10px) rotate(-3deg); }
+            100% { transform: translateX(0) rotate(0deg); }
+        }
+        
+        .shuffling {
+            animation: shuffle 0.5s ease-in-out infinite;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 600px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-container {
+                width: 250px;
+                height: 375px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 大K老師形象 -->
+    <img src="/static/images/k_teacher.png" class="k-teacher" id="kTeacher" alt="大K老師">
+    
+    <!-- 對話框 -->
+    <div class="speech-bubble" id="speechBubble">
+        <p id="bubbleText">你今天想問什麼問題呢?</p>
+    </div>
+    
+    <!-- 選項按鈕 -->
+    <div class="options-container" id="optionsContainer">
+        <button class="option-btn category-btn" data-category="health">
+            <span>❤️</span> 健康運勢
+        </button>
+        <button class="option-btn category-btn" data-category="love">
+            <span>💖</span> 感情運勢
+        </button>
+        <button class="option-btn category-btn" data-category="fortune">
+            <span>✨</span> 個人運勢
+        </button>
+        <button class="option-btn category-btn" data-category="wealth">
+            <span>💰</span> 財富運勢
+        </button>
+    </div>
+    
+    <!-- 卡片容器 -->
+    <div class="card-container" id="cardContainer">
+        <div class="card" id="card">
+            <div class="card-face card-front"></div>
+            <div class="card-face card-back" id="cardBack">
+                <div class="card-message" id="cardMessage"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局變量
+        let currentCardType = '';
+        let currentMessageId = 0;
+        let currentCategory = '';
+        
+        // 初始化動畫
+        function initAnimation() {
+            // 顯示大K老師
+            setTimeout(() => {
+                document.getElementById('kTeacher').style.opacity = 1;
+                
+                // 顯示對話框
+                setTimeout(() => {
+                    document.getElementById('speechBubble').style.opacity = 1;
+                    document.getElementById('speechBubble').style.transform = 'translateY(0)';
+                    
+                    // 顯示選項按鈕
+                    setTimeout(() => {
+                        document.getElementById('optionsContainer').style.opacity = 1;
+                    }, 1000);
+                }, 500);
+            }, 300);
+        }
+        
+        // 設置選項按鈕事件
+        function setupOptionButtons() {
+            const optionBtns = document.querySelectorAll('.category-btn');
+            
+            optionBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const category = this.dataset.category;
+                    const categoryText = this.textContent.trim();
+                    currentCategory = category;
+                    
+                    // 更新對話框
+                    document.getElementById('bubbleText').innerHTML = `好的，關於${categoryText}...<br>我來幫你抽牌！`;
+                    
+                    // 隱藏選項
+                    document.getElementById('optionsContainer').style.opacity = 0;
+                    document.getElementById('optionsContainer').style.pointerEvents = 'none';
+                    
+                    // 顯示卡片容器
+                    const cardContainer = document.getElementById('cardContainer');
+                    cardContainer.style.opacity = 1;
+                    
+                    // 添加洗牌動畫
+                    const card = document.getElementById('card');
+                    card.classList.add('shuffling');
+                    
+                    // 抽卡流程
+                    setTimeout(async () => {
+                        card.classList.remove('shuffling');
+                        
+                        try {
+                            const response = await fetch(`/draw_card/${category}`);
+                            if (!response.ok) throw new Error('Network response was not ok');
+                            
+                            const data = await response.json();
+                            
+                            // 保存卡片信息
+                            currentCardType = data.card_type;
+                            currentMessageId = data.message_id;
+                            
+                            // 設置卡片內容
+                            const cardBack = document.getElementById('cardBack');
+                            const cardMessage = document.getElementById('cardMessage');
+                            cardBack.style.backgroundImage = `url('${data.card_image}')`;
+                            cardMessage.textContent = data.message;
+                            
+                            // 更新對話
+                            document.getElementById('bubbleText').innerHTML = `牌已經準備好了！<br>請點擊卡片翻開你的命運之牌...`;
+                            
+                            // 啟用卡片點擊
+                            document.getElementById('card').style.pointerEvents = 'auto';
+                        } catch (error) {
+                            console.error('抽卡失敗:', error);
+                            document.getElementById('bubbleText').innerHTML = `抽卡失敗，請刷新頁面重試`;
+                        }
+                    }, 2000);
+                });
+            });
+        }
+        
+        // 設置卡片交互
+        function setupCardInteraction() {
+            document.getElementById('card').addEventListener('click', function() {
+                if (this.classList.contains('flipped')) {
+                    // 跳轉到卡片詳情頁
+                    window.location.href = `/card_detail/${currentCardType}/${currentMessageId}`;
+                    return;
+                }
+                
+                // 翻牌動畫
+                this.classList.add('flipped');
+            });
+        }
+        
+        // 預加載圖片
+        function preloadImages() {
+            const images = [
+                '/static/images/red_card.png',
+                '/static/images/yellow_card.png',
+                '/static/images/green_card.png',
+                '/static/images/white_card.png',
+                '/static/images/black_card.png',
+                '/static/images/card_back.png'
+            ];
+            images.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        }
+        
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initAnimation();
+            setupOptionButtons();
+            setupCardInteraction();
+            preloadImages();
+        });
+    </script>
+</body>
+</html>

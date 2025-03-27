@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡牌詳解 - 潛意識人生指引卡</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 繼承主站樣式 */
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+        .btn {
+            padding: 12px 24px;
+            background-color: #5d4a8a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        .btn:hover {
+            background-color: #6d5a9a;
+        }
+        
+        /* 卡牌詳情專用樣式 */
+        .card-detail {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .card-color-tag {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        .card-message {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .interpretation-section {
+            background: #f8f8f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .guidance-section {
+            border-left: 4px solid #5d4a8a;
+            padding-left: 20px;
+            margin: 20px 0;
+        }
+        .footer-nav {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        
+        /* 卡牌顏色主題 */
+        [data-color="red"] .card-color-tag,
+        [data-color="red"] .card-message {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        [data-color="yellow"] .card-color-tag,
+        [data-color="yellow"] .card-message {
+            background-color: #fff8e1;
+            color: #f9a825;
+        }
+        [data-color="green"] .card-color-tag,
+        [data-color="green"] .card-message {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        [data-color="black"] .card-color-tag,
+        [data-color="black"] .card-message {
+            background-color: #212121;
+            color: #e0e0e0;
+        }
+        [data-color="white"] .card-color-tag,
+        [data-color="white"] .card-message {
+            background-color: #f5f5f5;
+            color: #424242;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>卡牌詳解</h1>
+            <p>深入理解卡牌帶給你的訊息</p>
+        </header>
+
+        <main>
+            <div id="card-detail" class="card-detail">
+                <!-- 動態內容由JavaScript填充 -->
+                <div class="card-color-tag"></div>
+                <div class="card-message"></div>
+                
+                <div class="interpretation-section">
+                    <h3>潛意識解讀</h3>
+                    <p id="card-interpretation"></p>
+                </div>
+
+                <div class="guidance-section">
+                    <h3>實踐指引</h3>
+                    <p id="card-guidance"></p>
+                </div>
+            </div>
+        </main>
+
+        <div class="footer-nav">
+            <a href="/" class="btn">回到首頁</a>
+            <button id="draw-again" class="btn">再抽一次</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 從URL參數解析卡牌數據
+            const urlParams = new URLSearchParams(window.location.search);
+            const cardData = JSON.parse(decodeURIComponent(urlParams.get('card')));
+
+            // 獲取DOM元素
+            const cardDetail = document.getElementById('card-detail');
+            const colorTag = cardDetail.querySelector('.card-color-tag');
+            const cardMessage = cardDetail.querySelector('.card-message');
+            const interpretation = document.getElementById('card-interpretation');
+            const guidance = document.getElementById('card-guidance');
+
+            // 設置顏色主題
+            cardDetail.setAttribute('data-color', cardData.color);
+            
+            // 填充內容
+            colorTag.textContent = cardData.desc;
+            cardMessage.textContent = cardData.message;
+            interpretation.textContent = cardData.interpretation || '潛意識正在與你對話，請靜心感受...';
+            guidance.textContent = cardData.guidance || '本週每天花5分鐘冥想此訊息';
+
+            // 再抽一次按鈕
+            document.getElementById('draw-again').addEventListener('click', function() {
+                window.location.href = '/';
+            });
+        });
+    </script>
+</body>
+</html>
